@@ -38,8 +38,14 @@ run()
     while (true) {
         client_addr_len = sizeof(client_addr);
         client_fd = accept(server_fd, (sockaddr *)&client_addr, &client_addr_len);
-         EasyConnection::createEasyConnection(client_fd, )
-        this->conn_vec.push_back()
+        EasyConnection temp =  EasyConnection::createEasyConnection(
+            client_fd, 
+            string(inet_ntoa(server_addr.sin_addr)), 
+            this->server_port,
+            string(inet_ntoa(client_addr.sin_addr)),
+            client_addr.sin_port
+            )
+        this->conn_vec.push_back(temp);
     }
 
 }
