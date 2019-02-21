@@ -9,7 +9,8 @@ class EasyServer
  public:
 
  private:
-   std::vector<EasyConnection> conn_vec;
+  //  std::vector<EasyConnection> conn_vec;
+   std::vector<pthread_t> conn_vec;
    std::string server_ip;
    int server_port;
    int listen_list_len;

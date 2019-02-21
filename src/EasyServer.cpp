@@ -34,7 +34,7 @@ run()
     server_addr.sin_port = htons(this->server_port);
     bind(server_fd, (sockaddr *)&server_addr, sizeof(server_addr));
     listen(server_fd, this->listen_list_len);
-
+    // pthread_create();
     while (true) {
         client_addr_len = sizeof(client_addr);
         client_fd = accept(server_fd, (sockaddr *)&client_addr, &client_addr_len);
@@ -44,8 +44,9 @@ run()
             this->server_port,
             string(inet_ntoa(client_addr.sin_addr)),
             client_addr.sin_port
-            )
-        this->conn_vec.push_back(temp);
+        );
+        pthread_create();
+        // this->conn_vec.push_back(temp);
     }
 
 }

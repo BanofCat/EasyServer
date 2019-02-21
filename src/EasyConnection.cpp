@@ -7,9 +7,9 @@
 EasyConnection:: 
 EasyConnection& createEasyConnection(
     int connection_fd, 
-    const std::string server_ip, 
+    const std::string& server_ip, 
     int server_port,
-    const std::string client_ip, 
+    const std::string& client_ip, 
     int client_port)
 {
     // ip format check
@@ -122,8 +122,8 @@ recv(char* ret_bug, int buf_size)
 EasyConnection::
 EasyConnection(
     int connection_fd, 
-    const std::string server_ip, 
-    const std::string client_ip, 
+    const std::string& server_ip, 
+    const std::string& client_ip, 
     int client_port): connection_fd(-1), client_port(-1)
 {
     this->connection_fd = connection_fd;

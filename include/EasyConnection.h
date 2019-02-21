@@ -18,7 +18,7 @@ class EasyConnection
    int connection_fd;
 
  public:
-   static EasyConnection& createEasyConnection(int connection_fd, const std::string server_ip, int server_port, const std::string client_ip, int client_port);
+   static EasyConnection& createEasyConnection(int connection_fd, const std::string& server_ip, int server_port, const std::string& client_ip, int client_port);
    EasyConnection(const EasyConnection& target_conn);
    EasyConnection& operator=(const EasyConnection& target_conn);
 
@@ -36,7 +36,7 @@ class EasyConnection
    void close();
 
  private:
-   EasyConnection(int connection_fd, const std::string server_ip, const std::string client_ip, int client_port);
+   EasyConnection(int connection_fd, const std::string& server_ip, const std::string& client_ip, int client_port);
    ~EasyConnection();
    int deepCopy(const EasyConnection& target_conn);
 
