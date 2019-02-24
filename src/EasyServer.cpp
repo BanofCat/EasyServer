@@ -19,6 +19,38 @@ EasyServer& createEasyServer(const std::string& server_ip, int server_port)
     return EasyServer(server_ip, server_port);
 }
 
+void* EasyServer::
+connectionThread(void* args)
+{
+    EasyConnection* conn_ptr = (EasyConnection*)args;
+    int ret_val = 0;
+    char recv_buf[1024];
+    char send_buf[1024];
+    memset(recv_buf, 0, sizeof(recv_buf));
+    memset(send_buf, 0, sizeof(send_buf));
+    while(true) {
+        ret_val = conn_ptr->recv(recv_buf, sizeof(recv_buf));
+        if (ret_val < 0) {
+            break;
+        }
+        ret_val = conn_ptr->send(send_buf, sizeof(send_buf));
+        if (ret_val < 0) {
+            break;
+        }
+    }
+    LOG_ERROR_FMT("%d connection thread quit", pthread_self());
+}
+
+void EasyServer::
+closeConnection()
+{
+    std::map<ptherad_t, EasyConnection>::iterator iter;
+    for(iter = this->conn_map.begin(); iter != this->conn_map.end(); ++iter) {
+        ptherad_cancel(iter->first);
+        iter->second.close();
+    }
+}
+
 
 int EasyServer::
 run()
@@ -44,10 +76,12 @@ run()
             this->server_port,
             string(inet_ntoa(client_addr.sin_addr)),
             client_addr.sin_port
-            )
-        this->conn_vec.push_back(temp);
+        );
+        pthread_t thread_id;
+        pthread_create(thread_id, NULL, this->connectionThread, (void*)&temp));
+        this->conn_map[thread_id] = temp;
     }
-
+    this->closeConnection();
 }
 
 
@@ -66,11 +100,12 @@ serverPort()
 
 /* private */
 EasyServer::
-EasyServer(const std::string& server_ip, int server_port): conn_vec(10), server_port(-1)
+EasyServer(const std::string& server_ip, int server_port): server_port(-1)
 {
     this->server_ip = server_ip;
     this->server_port = server_port;
     this->listen_list_len = 10;
+    this->conn_map.clear();
 }
 
 EasyServer::
